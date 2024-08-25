@@ -1,4 +1,4 @@
-# cauldronwithemployee README
+# CauldronWithEmployee
 
 This is the README for your extension "cauldronwithemployee". After writing up a brief description, we recommend including the following sections.
 
