@@ -1,26 +1,57 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "cauldronwithemployee" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('cauldronwithemployee.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CauldronWithEmployee!');
-	});
-
-	context.subscriptions.push(disposable);
+    // Register the WebviewViewProvider
+    const provider = new CauldronWithEmployeeProvider(context.extensionUri);
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(CauldronWithEmployeeProvider.viewType, provider)
+    );
 }
 
-// This method is called when your extension is deactivated
+class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
+    public static readonly viewType = 'CauldronWithEmployeeView';
+
+    private _view?: vscode.WebviewView;
+
+    constructor(private readonly _extensionUri: vscode.Uri) {}
+
+    public resolveWebviewView(
+        webviewView: vscode.WebviewView,
+        context: vscode.WebviewViewResolveContext,
+        _token: vscode.CancellationToken,
+    ) {
+        this._view = webviewView;
+
+        // Allow scripts in the webview
+        webviewView.webview.options = {
+            enableScripts: true,
+            localResourceRoots: [this._extensionUri],
+        };
+
+        // Set the HTML content
+        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+    }
+
+    private _getHtmlForWebview(webview: vscode.Webview): string {
+		const styleUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css')
+        );
+        return `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<style>
+                    @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+                </style>
+            </head>
+            <body class="bg-gray-100 text-red-500">
+                <h1>test!</h1>
+                <p>This is a simple webview showing a "Hello World" message.</p>
+            </body>
+            </html>`;
+    }
+}
+
 export function deactivate() {}

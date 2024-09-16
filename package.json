@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "cauldronwithemployee:CauldronWithEmployee"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -17,9 +19,19 @@
         "command": "cauldronwithemployee.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "CauldronWithEmployeeView",
+          "name": "Cauldron With Employee"
+        }
+      ]
+    }
   },
   "scripts": {
+    "build:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./out/tailwind.css --watch",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -28,14 +40,17 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.92.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/vscode": "^1.92.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
+    "@vscode/test-electron": "^2.4.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.10"
   }
 }
