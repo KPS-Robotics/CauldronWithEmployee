@@ -46,9 +46,7 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<style>
-                    @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
-                </style>
+				  <link rel="stylesheet" href="${styleUri}">
             </head>
             <body class="bg-black text-red-500">
                 <h1>test!</h1>
