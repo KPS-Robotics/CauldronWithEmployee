@@ -36,6 +36,10 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
 		const styleUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css')
         );
+        const imageUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'mc.gif') 
+        );
+
         return `
             <!DOCTYPE html>
             <html lang="en">
@@ -46,9 +50,10 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
                     @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
                 </style>
             </head>
-            <body class="bg-gray-100 text-red-500">
+            <body class="bg-black text-red-500">
                 <h1>test!</h1>
                 <p>This is a simple webview showing a "Hello World" message.</p>
+                  <img src="${imageUri}" alt="Example Image" />
             </body>
             </html>`;
     }
