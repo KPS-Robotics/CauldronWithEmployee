@@ -1,16 +1,28 @@
+"use strict";
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
     // Register the WebviewViewProvider
     const provider = new CauldronWithEmployeeProvider(context.extensionUri);
+    
     context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider(CauldronWithEmployeeProvider.viewType, provider)
+        vscode.window.registerWebviewViewProvider(
+            CauldronWithEmployeeProvider.viewType,
+            provider)
     );
+
+    // Update error and warning count when the user saves a file
+    vscode.workspace.onDidSaveTextDocument(() => {
+        const [numErrors, numWarnings] = getNumErrors();
+        console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
+
+        // Update the webview with the new counts if it's active
+        provider.updateDiagnostics(numErrors, numWarnings);
+    });
 }
 
 class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'CauldronWithEmployeeView';
-
     private _view?: vscode.WebviewView;
 
     constructor(private readonly _extensionUri: vscode.Uri) {}
@@ -27,9 +39,26 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             enableScripts: true,
             localResourceRoots: [this._extensionUri],
         };
-
+       
         // Set the HTML content
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+        // Log diagnostics for all files
+        const [numErrors, numWarnings] = getNumErrors();
+        console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
+
+        // Display the initial error and warning count in the webview
+        this.updateDiagnostics(numErrors, numWarnings);
+    }
+
+    public updateDiagnostics(numErrors: number, numWarnings: number) {
+        if (this._view) {
+            this._view.webview.postMessage({
+                command: 'updateDiagnostics',
+                numErrors: numErrors,
+                numWarnings: numWarnings
+            });
+        }
     }
 
     private _getHtmlForWebview(webview: vscode.Webview): string {
@@ -46,15 +75,44 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-				  <link rel="stylesheet" href="${styleUri}">
+				<link rel="stylesheet" href="${styleUri}">
             </head>
             <body class="bg-black text-red-500">
-                <h1>test!</h1>
-                <p>This is a simple webview showing a "Hello World" message.</p>
-                  <img src="${imageUri}" alt="Example Image" />
+                <h1>Diagnostics</h1>
+                <p id="diagnostics">Errors: 0, Warnings: 0</p>
+                <img src="${imageUri}" alt="Example Image" />
+
+                <script>
+                    window.addEventListener('message', event => {
+                        const message = event.data;
+                        if (message.command === 'updateDiagnostics') {
+                            document.getElementById('diagnostics').textContent = 
+                                'Errors: ' + message.numErrors + ', Warnings: ' + message.numWarnings;
+                        }
+                    });
+                </script>
             </body>
             </html>`;
     }
+}
+
+// Function to get the number of errors and warnings
+function getNumErrors(): [number, number] {
+    const diagnostics = vscode.languages.getDiagnostics();
+    let numErrors = 0;
+    let numWarnings = 0;
+
+    diagnostics.forEach(([uri, diagnosticList]) => {
+        diagnosticList.forEach(diagnostic => {
+            if (diagnostic.severity === vscode.DiagnosticSeverity.Error) {
+                numErrors++;
+            } else if (diagnostic.severity === vscode.DiagnosticSeverity.Warning) {
+                numWarnings++;
+            }
+        });
+    });
+
+    return [numErrors, numWarnings];
 }
 
 export function deactivate() {}

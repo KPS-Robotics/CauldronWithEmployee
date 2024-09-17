@@ -15,10 +15,6 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "cauldronwithemployee.helloWorld",
-        "title": "Hello World"
-      }
     ],
     "views": {
       "explorer": [
