@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     // Update error and warning count when the user modifies the document
-    vscode.workspace.onDidChangeTextDocument(() => {
+    vscode.languages.onDidChangeDiagnostics(() => {
         const [numErrors, numWarnings] = getNumErrors();
         console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
 
@@ -60,7 +60,6 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
         // Display the initial error and warning count in the webview
         this.updateDiagnostics(numErrors, numWarnings);
     }
-
     public updateDiagnostics(numErrors: number, numWarnings: number) {
         if (this._view) {
             this._view.webview.postMessage({
