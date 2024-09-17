@@ -8,8 +8,18 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
             CauldronWithEmployeeProvider.viewType,
-            provider)
+            provider
+        )
     );
+
+    // Update error and warning count when the user modifies the document
+    vscode.workspace.onDidChangeTextDocument(() => {
+        const [numErrors, numWarnings] = getNumErrors();
+        console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
+
+        // Update the webview with the new counts if it's active
+        provider.updateDiagnosticsChangeText(numErrors, numWarnings);
+    });
 
     // Update error and warning count when the user saves a file
     vscode.workspace.onDidSaveTextDocument(() => {
@@ -61,8 +71,18 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
         }
     }
 
+    public updateDiagnosticsChangeText(numErrors: number, numWarnings: number) {
+        if (this._view) {
+            this._view.webview.postMessage({
+                command: 'updateDiagnosticsChangeText',
+                numErrors: numErrors,
+                numWarnings: numWarnings
+            });
+        }
+    }
+
     private _getHtmlForWebview(webview: vscode.Webview): string {
-		const styleUri = webview.asWebviewUri(
+        const styleUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css')
         );
         const nothingUri = webview.asWebviewUri(
@@ -77,7 +97,7 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link rel="stylesheet" href="${styleUri}">
+                <link rel="stylesheet" href="${styleUri}">
             </head>
             <body class="bg-black text-red-500">
                 <h1>Diagnostics</h1>
@@ -88,16 +108,16 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
                     window.addEventListener('message', event => {
                         const message = event.data;
                         if (message.command === 'updateDiagnostics') {
-                            document.getElementById('diagnostics').textContent = 
-                                'Errors: ' + message.numErrors + ', Warnings: ' + message.numWarnings;
-                            if ( message.numErrors !==0) {
+                            if (message.numErrors !== 0) {
                                 document.getElementById('mc').src = "${explosionUri}";
-                            }
-                            if ( message.numErrors ===0) {
+                            } else {
                                 document.getElementById('mc').src = "${nothingUri}";
                             }
                         }
-                     
+                        if (message.command === 'updateDiagnosticsChangeText') {
+                            document.getElementById('diagnostics').textContent = 
+                                'Errors: ' + message.numErrors + ', Warnings: ' + message.numWarnings;
+                        }
                     });
                 </script>
             </body>
@@ -123,16 +143,5 @@ function getNumErrors(): [number, number] {
 
     return [numErrors, numWarnings];
 }
-function hasErrors(): boolean {
-    const diagnostics = vscode.languages.getDiagnostics();
-    diagnostics.forEach(([uri, diagnosticList]) => {
-        diagnosticList.forEach(diagnostic => {
-            if (diagnostic.severity === vscode.DiagnosticSeverity.Error) {
-                return true; 
-            } 
-        });
-    });
 
-    return false;
-}
 export function deactivate() {}
