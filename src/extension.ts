@@ -29,6 +29,31 @@ export function activate(context: vscode.ExtensionContext) {
         // Update the webview with the new counts if it's active
         provider.updateDiagnostics(numErrors, numWarnings);
     });
+    // Note: URIs for onDidOpenTextDocument() can contain schemes other than file:// (such as git://)
+  vscode.workspace.onDidOpenTextDocument(
+    (textDocument) => {
+        if ((textDocument.uri.scheme !== "file")) {
+            return;
+          }
+        const [numErrors, numWarnings] = getNumErrors();
+        provider.updateDiagnosticsChangeText(numErrors, numWarnings);
+    },
+    null,
+    context.subscriptions
+  );
+
+  // Update on editor switch.
+    vscode.window.onDidChangeActiveTextEditor(
+    (textEditor) => {
+      if (textEditor === undefined) {
+        return;
+      }
+      const [numErrors, numWarnings] = getNumErrors();
+        provider.updateDiagnosticsChangeText(numErrors, numWarnings);
+    },
+    null,
+    context.subscriptions
+  );
 }
 
 class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
