@@ -65,10 +65,12 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
 		const styleUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css')
         );
-        const imageUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'mc.gif') 
+        const nothingUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'nothing.PNG') 
         );
-
+        const explosionUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'explosion.PNG') 
+        );
         return `
             <!DOCTYPE html>
             <html lang="en">
@@ -80,7 +82,7 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             <body class="bg-black text-red-500">
                 <h1>Diagnostics</h1>
                 <p id="diagnostics">Errors: 0, Warnings: 0</p>
-                <img src="${imageUri}" alt="Example Image" />
+                <img src="${nothingUri}" id="mc" alt="Example Image" />
 
                 <script>
                     window.addEventListener('message', event => {
@@ -88,7 +90,14 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
                         if (message.command === 'updateDiagnostics') {
                             document.getElementById('diagnostics').textContent = 
                                 'Errors: ' + message.numErrors + ', Warnings: ' + message.numWarnings;
+                            if ( message.numErrors !==0) {
+                                document.getElementById('mc').src = "${explosionUri}";
+                            }
+                            if ( message.numErrors ===0) {
+                                document.getElementById('mc').src = "${nothingUri}";
+                            }
                         }
+                     
                     });
                 </script>
             </body>
@@ -114,5 +123,16 @@ function getNumErrors(): [number, number] {
 
     return [numErrors, numWarnings];
 }
+function hasErrors(): boolean {
+    const diagnostics = vscode.languages.getDiagnostics();
+    diagnostics.forEach(([uri, diagnosticList]) => {
+        diagnosticList.forEach(diagnostic => {
+            if (diagnostic.severity === vscode.DiagnosticSeverity.Error) {
+                return true; 
+            } 
+        });
+    });
 
+    return false;
+}
 export function deactivate() {}
