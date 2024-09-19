@@ -80,7 +80,7 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
 
         // Log diagnostics for all files
         const [numErrors, numWarnings] = getNumErrors();
-        console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
+
 
         // Display the initial error and warning count in the webview
         this.updateDiagnostics(numErrors, numWarnings);
@@ -110,10 +110,10 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css')
         );
         const nothingUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'nothing.PNG') 
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'nothing.GIF') 
         );
         const explosionUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'explosion.PNG') 
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'explosion.GIF') 
         );
         return `
             <!DOCTYPE html>
@@ -129,13 +129,17 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
                 <img src="${nothingUri}" id="mc" alt="Example Image" />
 
                 <script>
-                    window.addEventListener('message', event => {
+                const delay = ms => new Promise(res => setTimeout(res, ms));
+                    window.addEventListener('message',async event => {
                         const message = event.data;
                         if (message.command === 'updateDiagnostics') {
                             if (message.numErrors !== 0) {
                                 document.getElementById('mc').src = "${explosionUri}";
+                                 await delay(600);
+                                 document.getElementById('mc').src = "${nothingUri}";
                             } else {
                                 document.getElementById('mc').src = "${nothingUri}";
+                                 
                             }
                         }
                         if (message.command === 'updateDiagnosticsChangeText') {
