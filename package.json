@@ -3,6 +3,10 @@
   "displayName": "CauldronWithEmployee",
   "description": "",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/KPS-Robotics/CauldronWithEmployee"
+  },
   "engines": {
     "vscode": "^1.92.0"
   },
@@ -14,8 +18,7 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-    ],
+    "commands": [],
     "views": {
       "explorer": [
         {
@@ -28,7 +31,6 @@
   },
   "scripts": {
     "build:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./out/tailwind.css --watch",
-    
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
