@@ -2,6 +2,7 @@
   "name": "cauldronwithemployee",
   "displayName": "CauldronWithEmployee",
   "publisher": "CauldronWithEmployee",
+  "icon": "media/logo.png",
   "description": "",
   "version": "0.0.1",
   "repository": {
