@@ -1,22 +1,39 @@
 "use strict";
-import * as vscode from 'vscode';
-
-export function activate(context: vscode.ExtensionContext) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.activate = activate;
+exports.deactivate = deactivate;
+const vscode = __importStar(require("vscode"));
+function activate(context) {
     // Register the WebviewViewProvider
     const provider = new CauldronWithEmployeeProvider(context.extensionUri);
-    
-    context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider(
-            CauldronWithEmployeeProvider.viewType,
-            provider
-        )
-    );
-
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider(CauldronWithEmployeeProvider.viewType, provider));
     // Update error and warning count when the user modifies the document
     vscode.languages.onDidChangeDiagnostics(() => {
         const [numErrors, numWarnings] = getNumErrors();
         console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
-
         // Update the webview with the new counts if it's active
         provider.updateDiagnosticsChangeText(numErrors, numWarnings);
     });
@@ -24,67 +41,48 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidSaveTextDocument(() => {
         const [numErrors, numWarnings] = getNumErrors();
         console.log(`Errors: ${numErrors}, Warnings: ${numWarnings}`);
-
         // Update the webview with the new counts if it's active
         provider.updateDiagnostics(numErrors, numWarnings);
     });
     // Note: URIs for onDidOpenTextDocument() can contain schemes other than file:// (such as git://)
-  vscode.workspace.onDidOpenTextDocument(
-    (textDocument) => {
+    vscode.workspace.onDidOpenTextDocument((textDocument) => {
         if ((textDocument.uri.scheme !== "file")) {
             return;
-          }
+        }
         const [numErrors, numWarnings] = getNumErrors();
         provider.updateDiagnosticsChangeText(numErrors, numWarnings);
-    },
-    null,
-    context.subscriptions
-  );
-
-  // Update on editor switch.
-    vscode.window.onDidChangeActiveTextEditor(
-    (textEditor) => {
-      if (textEditor === undefined) {
-        return;
-      }
-      const [numErrors, numWarnings] = getNumErrors();
+    }, null, context.subscriptions);
+    // Update on editor switch.
+    vscode.window.onDidChangeActiveTextEditor((textEditor) => {
+        if (textEditor === undefined) {
+            return;
+        }
+        const [numErrors, numWarnings] = getNumErrors();
         provider.updateDiagnosticsChangeText(numErrors, numWarnings);
-    },
-    null,
-    context.subscriptions
-  );
+    }, null, context.subscriptions);
 }
-
-class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'CauldronWithEmployeeView';
-    private _view?: vscode.WebviewView;
-
-    constructor(private readonly _extensionUri: vscode.Uri) {}
-
-    public resolveWebviewView(
-        webviewView: vscode.WebviewView,
-        context: vscode.WebviewViewResolveContext,
-        _token: vscode.CancellationToken,
-    ) {
+class CauldronWithEmployeeProvider {
+    _extensionUri;
+    static viewType = 'CauldronWithEmployeeView';
+    _view;
+    constructor(_extensionUri) {
+        this._extensionUri = _extensionUri;
+    }
+    resolveWebviewView(webviewView, context, _token) {
         this._view = webviewView;
-
         // Allow scripts in the webview
         webviewView.webview.options = {
             enableScripts: true,
             localResourceRoots: [this._extensionUri],
         };
-       
         // Set the HTML content
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-
         // Log diagnostics for all files
         const [numErrors, numWarnings] = getNumErrors();
-
-
         // Display the initial error and warning count in the webview
         this.updateDiagnostics(numErrors, numWarnings);
     }
-    public updateDiagnostics(numErrors: number, numWarnings: number) {
+    updateDiagnostics(numErrors, numWarnings) {
         if (this._view) {
             this._view.webview.postMessage({
                 command: 'updateDiagnostics',
@@ -93,8 +91,7 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             });
         }
     }
-
-    public updateDiagnosticsChangeText(numErrors: number, numWarnings: number) {
+    updateDiagnosticsChangeText(numErrors, numWarnings) {
         if (this._view) {
             this._view.webview.postMessage({
                 command: 'updateDiagnosticsChangeText',
@@ -103,20 +100,11 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             });
         }
     }
-
-    private _getHtmlForWebview(webview: vscode.Webview): string {
-        const styleUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css')
-        );
-        const nothingUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'nothing.GIF') 
-        );
-        const explosionUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'explosion.GIF') 
-        );
-        const errorUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, 'media', 'error.GIF') 
-        );
+    _getHtmlForWebview(webview) {
+        const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'out', 'tailwind.css'));
+        const nothingUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'nothing.GIF'));
+        const explosionUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'explosion.GIF'));
+        const errorUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'error.GIF'));
         return `
             <!DOCTYPE html>
             <html lang="en">
@@ -157,24 +145,22 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
             </html>`;
     }
 }
-
 // Function to get the number of errors and warnings
-function getNumErrors(): [number, number] {
+function getNumErrors() {
     const diagnostics = vscode.languages.getDiagnostics();
     let numErrors = 0;
     let numWarnings = 0;
-
     diagnostics.forEach(([uri, diagnosticList]) => {
         diagnosticList.forEach(diagnostic => {
             if (diagnostic.severity === vscode.DiagnosticSeverity.Error) {
                 numErrors++;
-            } else if (diagnostic.severity === vscode.DiagnosticSeverity.Warning) {
+            }
+            else if (diagnostic.severity === vscode.DiagnosticSeverity.Warning) {
                 numWarnings++;
             }
         });
     });
-
     return [numErrors, numWarnings];
 }
-
-export function deactivate() {}
+function deactivate() { }
+//# sourceMappingURL=extension.js.map

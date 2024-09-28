@@ -1,10 +1,20 @@
-# CauldronWithEmployee
 
+<h3 align="center">
+Cauldron with employee Extension for <a href="https://code.visualstudio.com">VSCode</a>
+<br>
+<img src="media/mc2.GIF" width="200" alt="Logo"/>
+</h3>
 
-## how to build
+<p align="center">
+    <a href="https://github.com/KPS-Robotics/CauldronWithEmployee/stargazers"><img src="https://img.shields.io/github/stars/KPS-Robotics/CauldronWithEmployee?colorA=363a4f&colorB=b7bdf8&style=for-the-badge"></a>
+    <a href="https://github.com/KPS-Robotics/CauldronWithEmployee/issues"><img src="https://img.shields.io/github/issues/KPS-Robotics/CauldronWithEmployee?colorA=363a4f&colorB=f5a97f&style=for-the-badge"></a>
+    <a href="https://github.com/KPS-Robotics/CauldronWithEmployee/contributors"><img src="https://img.shields.io/github/contributors/KPS-Robotics/CauldronWithEmployee?colorA=363a4f&colorB=a6da95&style=for-the-badge"></a>
+</p>
+<br>
+
+### how to build 🚀
 
 ```fish
-
 #entry the project dir
 cd CauldronWithEmployee
 
@@ -15,28 +25,38 @@ npm i
 # debug for run this extension
 ```
 
+<br>
 
-## Features
+### Features 🍵
+<p align="center">
+<img src="media/nothing.GIF" width="200" alt="Logo"/>
+<img src="media/explosion.GIF" width="200" alt="Logo"/>
+<img src="media/error.GIF" width="200" alt="Logo"/>
+</p>
 
-wait to write
+> normal
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+> save file but your code have Error than KA-BOOM🔥 !!!
 
-## Requirements
+> After KA-BOOM🔥 !!! you need to fix your code while the potion's color in the cauldron is red.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+<br>
+
+### Special Thank 💝
+
+> <a href="https://github.com/Ax-47"><img src="https://avatars.githubusercontent.com/u/85576471?s=50&v=4">
+</a> 
+<a href="https://github.com/yadada-wA"><img src="https://avatars.githubusercontent.com/u/147980519?s=50&v=4"></a>
+
+> Users
+
+<br>
 
 
-## Release Notes
+### Credit 🛸
 
-Users appreciate release notes as you update your extension.
+**Creators**
 
-### 1.0.0
-
-Initial release of CauldronWithEmployee
----
-
-
-## For more information
-
-* [Project](https://github.com/KPS-Robotics/CauldronWithEmployee)
+> <a href="https://github.com/Ax-47"><img src="https://avatars.githubusercontent.com/u/85576471?s=50&v=4">
+</a> 
+<a href="https://github.com/yadada-wA"><img src="https://avatars.githubusercontent.com/u/147980519?s=50&v=4"></a>
