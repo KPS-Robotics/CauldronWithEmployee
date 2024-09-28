@@ -119,7 +119,7 @@ class CauldronWithEmployeeProvider {
                 <h1 class="text-xl">Compound medicine</h1>
                 <p id="diagnostics" class="text-red-500">Errors: 0 Warnings: 0</p>
             </div>
-                <img src="${nothingUri}" id="mc" alt="Example Image" class="pt-32" />
+                <img src="${nothingUri}" id="mc" alt="Example Image" class="pt-16" />
                 </div>
                 <script>
                 const delay = ms => new Promise(res => setTimeout(res, ms));
