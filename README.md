@@ -12,7 +12,13 @@ Cauldron with employee Extension for <a href="https://code.visualstudio.com">VSC
 </p>
 <br>
 
-### how to build 🚀
+### Link 🔗
+Download here
+<a href="https://marketplace.visualstudio.com/items?itemName=CauldronWithEmployee.cauldronwithemployee">CauldronWithEmployee</a>
+
+<br>
+
+### How to build 🚀
 
 ```fish
 #entry the project dir
