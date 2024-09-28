@@ -20,7 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
         // Update the webview with the new counts if it's active
         provider.updateDiagnosticsChangeText(numErrors, numWarnings);
     });
-
     // Update error and warning count when the user saves a file
     vscode.workspace.onDidSaveTextDocument(() => {
         const [numErrors, numWarnings] = getNumErrors();
@@ -115,6 +114,9 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
         const explosionUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, 'media', 'explosion.GIF') 
         );
+        const errorUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, 'media', 'error.GIF') 
+        );
         return `
             <!DOCTYPE html>
             <html lang="en">
@@ -139,7 +141,7 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
                             if (message.numErrors !== 0) {
                                 document.getElementById('mc').src = "${explosionUri}";
                                  await delay(600);
-                                 document.getElementById('mc').src = "${nothingUri}";
+                                 document.getElementById('mc').src = "${errorUri}";
                             } else {
                                 document.getElementById('mc').src = "${nothingUri}";
                                  
