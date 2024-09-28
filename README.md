@@ -44,9 +44,7 @@ npm i
 
 ### Special Thank 💝
 
-> <a href="https://github.com/Ax-47"><img src="https://avatars.githubusercontent.com/u/85576471?s=50&v=4">
-</a> 
-<a href="https://github.com/yadada-wA"><img src="https://avatars.githubusercontent.com/u/147980519?s=50&v=4"></a>
+> <a href="https://github.com/Ax-47"><img src="https://avatars.githubusercontent.com/u/85576471?s=50&v=4"></a> <a href="https://github.com/yadada-wA"><img src="https://avatars.githubusercontent.com/u/147980519?s=50&v=4"></a>
 
 > Users
 
@@ -57,6 +55,4 @@ npm i
 
 **Creators**
 
-> <a href="https://github.com/Ax-47"><img src="https://avatars.githubusercontent.com/u/85576471?s=50&v=4">
-</a> 
-<a href="https://github.com/yadada-wA"><img src="https://avatars.githubusercontent.com/u/147980519?s=50&v=4"></a>
+> <a href="https://github.com/Ax-47"><img src="https://avatars.githubusercontent.com/u/85576471?s=50&v=4"></a> <a href="https://github.com/yadada-wA"><img src="https://avatars.githubusercontent.com/u/147980519?s=50&v=4"></a>
