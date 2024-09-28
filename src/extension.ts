@@ -122,10 +122,13 @@ class CauldronWithEmployeeProvider implements vscode.WebviewViewProvider {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link rel="stylesheet" href="${styleUri}">
+                <script src="https://cdn.tailwindcss.com"></script>
             </head>
-            <body class="bg-black text-red-500">
-                <h1>Diagnostics</h1>
-                <p id="diagnostics">Errors: 0, Warnings: 0</p>
+            <body class="bg-transparent">
+            <div class="text-center">
+                <h1 class="text-xl">Compound medicine</h1>
+                <p id="diagnostics" class="text-red-500">Errors: 0, Warnings: 0</p>
+            </div>
                 <img src="${nothingUri}" id="mc" alt="Example Image" />
 
                 <script>
